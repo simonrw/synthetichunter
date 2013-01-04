@@ -68,7 +68,7 @@ class ViewModel
         self.sort_var = ko.observableArray(['SDE', 'Planetary radius', 'Orbital period', 'Transit depth'
             'Stellar radius', 'V magnitude', 'Effective temperature'])
         self.selected_sort = ko.observable(['SDE'])
-        self.sort_direction = ko.observable(1)
+        self.sort_direction = ko.observable(0)
 
         # Set up validation
         self.limit.extend { required: true, min: 1 }
