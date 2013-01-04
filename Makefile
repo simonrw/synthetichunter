@@ -1,5 +1,7 @@
 .PHONY: server coffee
 
+all: | coffee server
+
 server:
 	@echo "Running server"
 	@node app.js
