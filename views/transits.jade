@@ -1,0 +1,24 @@
+extends layout
+
+block content
+    .container
+        .row
+            .span12
+                h1
+                    | Transits: 
+                    span(data-bind='text: obj_id')
+
+        .row
+            .span12
+                #images
+                    ul(data-bind='foreach: transit_images', class='thumbnails')
+                        li.span3
+                            a(data-bind='attr: { href: $data }', class='thumbnail')
+                                img(data-bind='attr: { src: $data }')
+
+    script(type='text/javascript', src='/js/_comp/transits-viewmodel.js')
+    script(type='text/javascript')
+        $(function() {
+            ko.applyBindings(new ViewModel("#{id}"));
+        });
+

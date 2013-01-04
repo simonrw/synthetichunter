@@ -1,0 +1,65 @@
+extends layout
+
+block content
+    .container
+        .row
+            .span12
+                h1(data-bind='text: obj_id')
+                
+                a(data-bind='attr: { href: $data.id() + "/transits" }') Transits
+
+        .row
+            .span12
+                #viable
+                    label Viable? 
+                    label(for='yes-option', class='radio') Yes
+                        input(type='radio', data-bind='checked: viable_result', value='y', name='viable', id='yes-option')
+                    label(for='maybe-option', class='radio') Maybe
+                        input(type='radio', data-bind='checked: viable_result', value='m', name='viable', id='maybe-option')
+                    label(for='no-option', class='radio') No
+                        input(type='radio', data-bind='checked: viable_result', value='n', name='viable', id='no-option')
+
+        .row
+            .span12
+                #mcmc-results
+                    table(class='table table-bordered')
+                        thead
+                            tr(data-bind='foreach: mcmc_titles')
+                                td(data-bind='text: $data')
+                        tbody
+                            tr(data-bind='foreach: mcmc_values')
+                                td(data-bind='text: $data')
+
+
+        .row
+            .span12
+                #images
+                    ul.thumbnails
+                        li.span4
+                            a(data-bind='attr: { href: lc_filename }', class='thumbnail')
+                                img(data-bind='attr: { src: lc_filename }')
+                        li.span4
+                            a(data-bind='attr: { href: pgram_filename }', class='thumbnail')
+                                img(data-bind='attr: { src: pgram_filename }')
+                        li.span4
+                            a(data-bind='attr: { href: phase_filename }', class='thumbnail')
+                                img(data-bind='attr: { src: phase_filename }')
+
+        .row
+            .span12
+                #orion-results
+                    table(class='table table-bordered')
+                        thead
+                            tr(data-bind='foreach: orion_titles')
+                                td(data-bind='text: $data')
+                        tbody
+                            tr(data-bind='foreach: orion_values')
+                                td(data-bind='text: $data')
+
+
+    script(type='text/javascript', src='/js/_comp/detail-viewmodel.js')
+    script(type='text/javascript')
+        $(function() {
+            ko.applyBindings(new ObjectInformation("#{id}", "#{sessionid}"));
+        });
+

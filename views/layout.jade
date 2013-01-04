@@ -1,0 +1,26 @@
+doctype 5
+html
+  head
+    script(type='text/javascript', src='/js/lib/jquery.js')
+    script(type='text/javascript', src='/js/lib/underscore.js')
+    script(type='text/javascript', src='/js/lib/knockout.js')
+    script(type='text/javascript', src='/js/lib/knockout-mapping.js')
+    script(type='text/javascript', src='/js/_comp/functions.js')
+
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+
+    // Add some fonts 
+    link(href="http://fonts.googleapis.com/css?family=Droid+Serif", rel="stylesheet", type="text/css")
+    link(href="http://fonts.googleapis.com/css?family=Droid+Sans", rel="stylesheet", type="text/css")
+
+    link(rel='stylesheet', href='/css/style.css')
+
+    title Synthetic Hunter
+  body
+    .navbar
+        .navbar-inner
+            a(href='/', class='brand') Home
+
+    block content
+
+    script(type='text/javascript', src='/js/lib/bootstrap.js')

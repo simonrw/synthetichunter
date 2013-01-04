@@ -1,0 +1,83 @@
+extends layout
+
+block content
+  .container
+      .row
+          .span7
+              h1= title
+              p Welcome to #{title}
+
+              ul(data-bind='foreach: objects, visible: limit() > 0')
+                  ul.thumbnails
+                      li.span3
+                          a(data-bind='attr: { href: "results/" + $data._id() }')
+                              img(data-bind='attr: { src: $data.lc_filename }', class='thumbnail')
+                      li.span3
+                          a(data-bind='attr: { href: "results/" + $data._id() }')
+                              img(data-bind='attr: { src: $data.pgram_filename }', class='thumbnail')
+                      li.span7
+                          form(data-bind='submit: function() {}', class='form')
+                              .control-group
+                                  label(class='control-label') Viable?
+                                  .controls
+                                      label(class='radio inline')
+                                          input(type='radio', value='y', class='radio inline', data-bind='checked: $data.viable_result')
+                                          | Yes
+                                      label(class='radio inline')
+                                          input(type='radio', value='m', class='radio inline', data-bind='checked: $data.viable_result')
+                                          | Maybe
+                                      label(class='radio inline')
+                                          input(type='radio', value='n', class='radio inline', data-bind='checked: $data.viable_result')
+                                          | No
+
+
+
+
+            .span4#input
+                form(data-bind='submit: function() {}', class='form-horizontal', data-spy='affix')
+                    fieldset
+                        legend Input
+                        .control-group
+                            label(class='control-label', for='username') Username
+                            .controls
+                                input(type='text', id='username', placeholder='Optional', data-bind='value: username')
+
+                        .control-group
+                            label(for='limit', class='control-label') Number: 
+                            .controls
+                                input(type='number', data-bind='value: limit', id='limit', step='1', min=1, 'required')
+                                label(for='limit', data-bind='validationMessage: limit')
+
+                        .control-group
+                            label(for='sort', class='control-label') Sort:
+                            .controls
+                                input(type='checkbox', data-bind='checked: sort', id='sort')
+
+                        .control-group
+                            label(for='sort-var', class='control-label') Sort variable
+                            .controls
+                                select(data-bind='options: sort_var, enable: sort, selectedOptions: selected_sort')
+
+                        .control-group
+                            label(for='sort-direction, enable: sort', class='control-label') Direction
+                            .controls
+                                label(for='sort-up', class='radio')
+                                    input(type='radio', data-bind='checked: sort_direction, enable: sort', value='1', id='sort-up')
+                                    | Ascending
+                                label(for='sort-down', class='radio')
+                                    input(type='radio', data-bind='checked: sort_direction, enable: sort', value='0', id='sort-down')
+                                    | Descending
+
+  script(type='text/javascript', src='/js/lib/knockout.validation.min.js')
+  script(type='text/javascript', src='/js/_comp/index-viewmodel.js')
+
+  script(type='text/javascript')
+      $(function() {
+            ko.validation.init({ 
+                insertMessages: false,
+                decorateElement: true,
+                errorClass: 'invalid'
+            });
+
+            ko.applyBindings(new ViewModel("#{sessionid}"));
+      });

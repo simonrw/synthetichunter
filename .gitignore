@@ -1,0 +1,11 @@
+node_modules
+public/javascripts/_comp
+public/js/lib
+app.js
+public/js/_comp/detail-viewmodel.js
+public/js/_comp/functions.js
+public/js/_comp/index-viewmodel.js
+public/js/_comp/transits-viewmodel.js
+public/js/_comp/viewmodel.js
+routes/backend-1.0.js
+routes/frontend.js
