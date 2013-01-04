@@ -1,5 +1,13 @@
+os = require 'os'
+
+# Development/Production check
 mongodb = require 'mongodb'
-server_url = 'localhost'
+if os.hostname() == 'mbp.lan'
+    console.log 'Running in development mode'
+    server_url = 'localhost'
+else
+    server_url = 'sirius.astro.warwick.ac.uk'
+
 port = 27017
 db_name = 'hunter'
 ObjectID = mongodb.ObjectID
