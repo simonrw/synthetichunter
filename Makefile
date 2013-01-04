@@ -9,3 +9,7 @@ server:
 coffee: 
 	@echo "Compiling coffeescript files"
 	@coffee --compile --output . coffee
+
+deps:
+	@echo "Fetching dependencies"
+	@npm install
