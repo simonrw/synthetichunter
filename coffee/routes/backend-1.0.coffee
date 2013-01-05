@@ -1,12 +1,16 @@
 os = require 'os'
 
-# Development/Production check
 mongodb = require 'mongodb'
-if os.hostname() == 'mbp.lan'
-    console.log 'Running in development mode'
+
+
+# Development/Production check
+hostname = os.hostname()
+if hostname == 'mbp.lan' or hostname == 'sirius'
     server_url = 'localhost'
 else
     server_url = 'sirius.astro.warwick.ac.uk'
+
+console.log "Connecting to mongo on hostname: #{server_url}"
 
 port = 27017
 db_name = 'hunter'
