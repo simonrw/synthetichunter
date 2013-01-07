@@ -12,10 +12,12 @@ else
 
 console.log "Connecting to mongo on hostname: #{server_url}"
 
+# Some configuration variables
 port = 27017
 db_name = 'hunter'
 ObjectID = mongodb.ObjectID
 
+# Function to get a collection with given name from the database
 mongo_connection = (collection_name, next) ->
     server = new mongodb.Server server_url, port
     mongodb.Db(db_name, server, { w: 1}).open (err, client) ->
@@ -25,6 +27,7 @@ mongo_connection = (collection_name, next) ->
         collection = new mongodb.Collection client, collection_name
         next collection
 
+# Simplification of getting an object by id
 get_single_object = (id, next) ->
     mongo_connection 'objects', (collection) ->
         if id == undefined
@@ -39,6 +42,7 @@ get_single_object = (id, next) ->
 
             next result
 
+# Gets a single random object
 get_random_object = (next) ->
     mongo_connection 'objects', (collection) ->
         rand = Math.random()
@@ -55,8 +59,9 @@ get_random_object = (next) ->
                         console.log err
 
                         next(result)
-        
 
+
+# Returns a list of objects which match the input sorting/filtering criteria
 exports.objects = (req, res) ->
     #console.log req.body
 
@@ -105,10 +110,12 @@ exports.objects = (req, res) ->
                 results.status = 'Ok'
                 res.send results
 
+# Just returns the single object requested
 exports.detail = (req, res) ->
     get_single_object req.params.id, (result) ->
         res.send result
 
+# Returns just the required information for an objects transit images
 exports.transits = (req, res) ->
     get_single_object req.params.id, (result) ->
         object = {
@@ -118,6 +125,7 @@ exports.transits = (req, res) ->
 
         res.send object
 
+# Updates an objects belief value
 exports.update = (req, res) ->
     id = ObjectID req.params.id
     value = req.body.value
@@ -147,8 +155,8 @@ exports.update = (req, res) ->
 
     res.send 'Updating ' + req.params.id  + ' to ' + req.body.value + ' with user ' + req.body.sessionid
 
-
-exports.user = (req, res) ->
+# Returns a user object
+exports.user = (req, res) -
     mongo_connection 'users', (collection) ->
         username = req.body.username
         sessionid = req.body.sessionid
@@ -182,6 +190,7 @@ exports.user = (req, res) ->
                                 message: "Updated"
                             }
 
+# Gets a single user by id
 exports.get_user_from_id = (req, res) ->
     mongo_connection 'users', (collection) ->
         collection.findOne { sessionid: req.body.id }, (err, user) ->
@@ -194,6 +203,7 @@ exports.get_user_from_id = (req, res) ->
                 res.send null
 
 
+# Returns a user from their username
 exports.get_user_from_username = (req, res) ->
     mongo_connection 'users', (collection) ->
         collection.findOne { username: req.params.username }, (err, user) ->
@@ -204,4 +214,3 @@ exports.get_user_from_username = (req, res) ->
                 res.send user
             else
                 res.send 404
-
