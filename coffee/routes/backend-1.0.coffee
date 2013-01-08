@@ -1,6 +1,6 @@
 os = require 'os'
 
-mongodb = require 'mongodb'
+mongoose = require 'mongoose'
 
 
 # Development/Production check
