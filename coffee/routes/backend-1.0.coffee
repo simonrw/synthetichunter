@@ -66,7 +66,13 @@ objectSchema = mongoose.Schema {
         String: String
     }
 }
+userSchema = mongoose.Schema {
+    username: String
+    sessionid: String
+}
+
 Object = mongoose.Model 'Object', objectSchema
+User = mongoose.Model 'User', userSchema
 
 # Returns a list of objects which match the input sorting/filtering criteria
 exports.objects = (req, res) ->
