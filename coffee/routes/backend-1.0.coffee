@@ -20,6 +20,8 @@ db = mongoose.connection
 
 # Bind error commands to the console
 db.on 'error', console.error.bind console, 'connection error:'
+db.once 'open', ->
+    console.log 'Mongo connection open'
 
 # Define the schema
 objectSchema = mongoose.Schema {
