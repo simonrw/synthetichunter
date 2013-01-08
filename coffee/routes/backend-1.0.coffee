@@ -156,7 +156,7 @@ exports.update = (req, res) ->
     res.send 'Updating ' + req.params.id  + ' to ' + req.body.value + ' with user ' + req.body.sessionid
 
 # Returns a user object
-exports.user = (req, res) -
+exports.user = (req, res) ->
     mongo_connection 'users', (collection) ->
         username = req.body.username
         sessionid = req.body.sessionid
