@@ -24,7 +24,7 @@ db.once 'open', ->
     console.log 'Mongo connection open'
 
 # Define the schema
-objectSchema = mongoose.Schema {
+objectSchema = new mongoose.Schema {
     obj_id: String
     file_info: {
         phase_filename: String
@@ -68,13 +68,13 @@ objectSchema = mongoose.Schema {
         String: String
     }
 }
-userSchema = mongoose.Schema {
+userSchema = new mongoose.Schema {
     username: String
     sessionid: String
 }
 
-Object = mongoose.Model 'Object', objectSchema
-User = mongoose.Model 'User', userSchema
+Object = mongoose.model 'Object', objectSchema
+User = mongoose.model 'User', userSchema
 
 # Returns a list of objects which match the input sorting/filtering criteria
 exports.objects = (req, res) ->
