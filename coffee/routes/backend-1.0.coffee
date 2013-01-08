@@ -15,50 +15,11 @@ console.log "Connecting to mongo on hostname: #{server_url}"
 # Some configuration variables
 port = 27017
 db_name = 'hunter'
-ObjectID = mongodb.ObjectID
+mongoose.connect "mongodb://#{server_url}:#{port}/#{db_name}"
+db = mongoose.connection
 
-# Function to get a collection with given name from the database
-mongo_connection = (collection_name, next) ->
-    server = new mongodb.Server server_url, port
-    mongodb.Db(db_name, server, { w: 1}).open (err, client) ->
-        if err
-            throw err
-
-        collection = new mongodb.Collection client, collection_name
-        next collection
-
-# Simplification of getting an object by id
-get_single_object = (id, next) ->
-    mongo_connection 'objects', (collection) ->
-        if id == undefined
-            next 404
-
-        collection.findOne { _id: ObjectID id }, (err, result) ->
-            if err
-                console.log err
-
-            if !result
-                next 404
-
-            next result
-
-# Gets a single random object
-get_random_object = (next) ->
-    mongo_connection 'objects', (collection) ->
-        rand = Math.random()
-
-        collection.findOne { random: { $gte: rand }}, (err, result) ->
-            if err
-                console.log err
-
-            if result?
-                next(result)
-            else
-                collection.findOne { random: { $lte: rand }}, (err, result2) ->
-                    if err
-                        console.log err
-
-                        next(result)
+# Bind error commands to the console
+db.on 'error', console.error.bind console, 'connection error:'
 
 
 # Returns a list of objects which match the input sorting/filtering criteria
