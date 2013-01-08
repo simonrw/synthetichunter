@@ -21,6 +21,52 @@ db = mongoose.connection
 # Bind error commands to the console
 db.on 'error', console.error.bind console, 'connection error:'
 
+# Define the schema
+objectSchema = mongoose.Schema {
+    obj_id: String
+    file_info: {
+        phase_filename: String
+        pg_filename: String
+        tr_filenames: [String]
+        lc_filename: String
+        data_filename: String
+    }
+    object_info: {
+        orion: {
+            delta_chisq: Number
+            vmag: Number
+            period: Number
+            sde: Number
+            radius: Number
+            a: Number
+            rstar: Number
+            i: Number
+            epoch: Number
+            width: Number
+            depth: Number
+            ntrans: Number
+        }
+        mcmc: {
+            clump_idx: Number
+            teff: Number
+            period: Number
+            sn_ellipse: Number
+            radius: Number
+            dchisq_mr: Number
+            rstar: Number
+            depth: Number
+            sn_red: Number
+            epoch: Number
+            prob_rp: Number
+        }
+        obj_id: String
+    }
+    random: Number
+    user_info: {
+        String: String
+    }
+}
+Object = mongoose.Model 'Object', objectSchema
 
 # Returns a list of objects which match the input sorting/filtering criteria
 exports.objects = (req, res) ->
