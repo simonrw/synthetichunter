@@ -5,7 +5,7 @@ mongoose = require 'mongoose'
 
 # Development/Production check
 hostname = os.hostname()
-if hostname == 'mbp.lan' or hostname == 'sirius'
+if hostname == 'mbp.local' or hostname == 'sirius'
     server_url = 'localhost'
 else
     server_url = 'sirius.astro.warwick.ac.uk'
