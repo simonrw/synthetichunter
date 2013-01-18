@@ -141,7 +141,14 @@ exports.update = (req, res) ->
         if err
             console.log err
 
-        res.send 'Ok'
+        found = false
+        for user_info, i in result.user_info
+            if user_info.sessionid == user
+                # Change the value
+                console.log "Updating value for user #{user} from #{result.user_info[i].value} to #{value}"
+                result.user_info[i].value = value
+                found = true
+
 
 
 exports.user = (req, res) ->
