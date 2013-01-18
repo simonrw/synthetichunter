@@ -4,7 +4,7 @@ os = require 'os'
 winston = require 'winston'
 
 # Only log to a file
-winston.add winston.transports.File { filename: "hunter.log" }
+winston.add winston.transports.File, { filename: "hunter.log" }
 
 mongoose = require 'mongoose'
 
