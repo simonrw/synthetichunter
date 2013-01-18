@@ -16,7 +16,7 @@ if hostname == 'mbp.local' or hostname == 'sirius'
 else
     server_url = 'sirius.astro.warwick.ac.uk'
 
-console.log "Connecting to mongo on hostname: #{server_url}"
+winston.log 'info', "Connecting to mongo on hostname: #{server_url}"
 
 # Some configuration variables
 port = 27017
@@ -27,7 +27,7 @@ db = mongoose.connection
 # Bind error commands to the console
 db.on 'error', console.error.bind console, 'connection error:'
 db.once 'open', ->
-    console.log 'Mongo connection open'
+    winston.log 'info', 'Mongo connection open'
 
 # Define the schema
 objectSchema = new mongoose.Schema {
