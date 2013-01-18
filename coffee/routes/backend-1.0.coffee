@@ -64,9 +64,7 @@ objectSchema = new mongoose.Schema {
         obj_id: String
     }
     random: Number
-    user_info: {
-        String: String
-    }
+    user_info: [ { sessionid: String, value: String } ]
 }
 userSchema = new mongoose.Schema {
     username: String
