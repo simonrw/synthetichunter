@@ -222,10 +222,16 @@ exports.user = (req, res) ->
 # Gets a single user by id
 exports.get_user_from_id = (req, res) ->
     User.findOne { sessionid: req.body.id }, (err, user) ->
+        if err
+            logger.log 'error', err
+
         res.send user
 
 
 # Returns a user from their username
 exports.get_user_from_username = (req, res) ->
     User.findOne { username: req.params.username }, (err, user) ->
+        if err
+            logger.log 'error', err
+
         res.send user
