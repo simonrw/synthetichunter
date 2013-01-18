@@ -64,9 +64,7 @@ objectSchema = new mongoose.Schema {
         obj_id: String
     }
     random: Number
-    user_info: {
-        String: String
-    }
+    user_info: [ { sessionid: String, value: String } ]
 }
 userSchema = new mongoose.Schema {
     username: String
@@ -143,7 +141,23 @@ exports.update = (req, res) ->
         if err
             console.log err
 
-        result.user_info[user] = value
+        found = false
+        for user_info, i in result.user_info
+            if user_info.sessionid == user
+                # Change the value
+                console.log "Updating value for user #{user} from #{result.user_info[i].value} to #{value}"
+                result.user_info[i].value = value
+                found = true
+
+        if not found
+            # Have to append the result to the array
+            console.log "Appending the user's info"
+            result.user_info.push {
+                sessionid: user
+                value: value
+            }
+
+        # Now save the object
         result.save (err) ->
             if err
                 console.log err

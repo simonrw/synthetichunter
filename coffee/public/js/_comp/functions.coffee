@@ -23,10 +23,8 @@ window.add_user_info = (object_id, sessionid, value) ->
     }
 
 window.user_belief = (object, sessionid) ->
-    user_info = object.user_info
-    if user_info?
-        belief = user_info[sessionid]
-        if belief?
-            return belief
+    for user_info in object.user_info
+        if user_info.sessionid == sessionid
+            return user_info.value
 
     return null
