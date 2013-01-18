@@ -11,3 +11,4 @@ routes/frontend.js
 tags
 public/data
 images
+logger.js
