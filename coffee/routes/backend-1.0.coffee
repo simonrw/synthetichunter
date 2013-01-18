@@ -149,6 +149,14 @@ exports.update = (req, res) ->
                 result.user_info[i].value = value
                 found = true
 
+        if not found
+            # Have to append the result to the array
+            console.log "Appending the user's info"
+            result.user_info.push {
+                sessionid: user
+                value: value
+            }
+
 
 
 exports.user = (req, res) ->
