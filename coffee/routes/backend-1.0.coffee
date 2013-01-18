@@ -151,13 +151,25 @@ exports.update = (req, res) ->
         for user_info, i in result.user_info
             if user_info.sessionid == user
                 # Change the value
-                console.log "Updating value for user #{user} from #{result.user_info[i].value} to #{value}"
+                
+                winston.log 'info', "Updating value", { 
+                    user: user
+                    before: result.user_info[i].value
+                    after: value
+                    id: id 
+                }
+
                 result.user_info[i].value = value
                 found = true
 
         if not found
             # Have to append the result to the array
-            console.log "Appending the user's info"
+            winston.log 'info', "Appending the user's info", {
+                user: user
+                after: value
+                id: id
+            }
+
             result.user_info.push {
                 sessionid: user
                 value: value
