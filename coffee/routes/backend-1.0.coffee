@@ -1,5 +1,8 @@
 os = require 'os'
 
+# Set up logger
+logger = require('../logger').logger
+
 mongoose = require 'mongoose'
 
 
@@ -10,7 +13,7 @@ if hostname == 'mbp.local' or hostname == 'sirius'
 else
     server_url = 'sirius.astro.warwick.ac.uk'
 
-console.log "Connecting to mongo on hostname: #{server_url}"
+logger.log 'info', "Connecting to mongo on hostname: #{server_url}"
 
 # Some configuration variables
 port = 27017
@@ -21,7 +24,7 @@ db = mongoose.connection
 # Bind error commands to the console
 db.on 'error', console.error.bind console, 'connection error:'
 db.once 'open', ->
-    console.log 'Mongo connection open'
+    logger.info 'Mongo connection open'
 
 # Define the schema
 objectSchema = new mongoose.Schema {
@@ -77,11 +80,11 @@ User = mongoose.model 'User', userSchema
 # Returns a list of objects which match the input sorting/filtering criteria
 exports.objects = (req, res) ->
     limit = if req.body.limit != undefined then parseInt req.body.limit else 20
+    logger.info 'Sort limit', { value: limit }
     query = Object.find()
 
     sort_var = req.body.sort_var
     if req.body.sort == 'true'
-        console.log 'Sorting'
         _orion_base = 'object_info.orion.'
         _mcmc_base = 'object_info.mcmc.'
         switch sort_var
@@ -98,15 +101,16 @@ exports.objects = (req, res) ->
         else 
             sort_var = '-' + sort_var
 
+        logger.info "Sorting", { sort_var: sort_var }
         query.sort sort_var
     else
-        console.log 'Not sorting'
+        logger.info 'Not sorting'
 
     query.limit(limit)
 
     query.exec (err, results) ->
         if err
-            console.log err
+            logger.error err
 
         res.send results
 
@@ -114,20 +118,23 @@ exports.objects = (req, res) ->
 exports.detail = (req, res) ->
     Object.findById req.params.id, (err, result) ->
         if err
-            console.log err
+            logger.error err
 
+        logger.info 'Getting object info', { "function": "detail", id: req.params.id }
         res.send result
 
 # Returns just the required information for an objects transit images
 exports.transits = (req, res) ->
     Object.findById req.params.id, (err, result) ->
         if err
-            console.log err
+            logger.error err
 
         object = {
             obj_id: result.obj_id
             tr_filenames: result.file_info.tr_filenames
         }
+
+        logger.info 'Getting transits', { "function": "transits", id: req.params.id, obj_id: result.obj_id }
 
         res.send object
 
@@ -139,19 +146,31 @@ exports.update = (req, res) ->
 
     Object.findById id, (err, result) ->
         if err
-            console.log err
+            logger.error err
 
         found = false
         for user_info, i in result.user_info
             if user_info.sessionid == user
                 # Change the value
-                console.log "Updating value for user #{user} from #{result.user_info[i].value} to #{value}"
+                
+                logger.info "Updating value", { 
+                    user: user
+                    before: result.user_info[i].value
+                    after: value
+                    id: id 
+                }
+
                 result.user_info[i].value = value
                 found = true
 
         if not found
             # Have to append the result to the array
-            console.log "Appending the user's info"
+            logger.info "Appending the user's info", {
+                user: user
+                after: value
+                id: id
+            }
+
             result.user_info.push {
                 sessionid: user
                 value: value
@@ -160,7 +179,7 @@ exports.update = (req, res) ->
         # Now save the object
         result.save (err) ->
             if err
-                console.log err
+                logger.error err
 
             res.send 'Ok'
 
@@ -172,18 +191,18 @@ exports.user = (req, res) ->
 
     User.findOne { username: username, sessionid: sessionid }, (err, result) ->
         if err
-            console.log err
+            logger.error err
 
         if result?
             User.findOne { sessionid: sessionid }, (err, result) ->
                 if err
-                    console.log err
+                    logger.error err
 
                 if result.username != username
                     result.username = username
                     result.save (err) ->
                         if err
-                            console.log err
+                            logger.error err
 
                         res.send {
                             message: "Updated"
@@ -192,7 +211,7 @@ exports.user = (req, res) ->
         else
             User({ username: username, sessionid: sessionid }).save (err) ->
                 if err
-                    console.log err
+                    logger.error err
 
                     res.send {
                         message: "Inserted"
@@ -203,10 +222,16 @@ exports.user = (req, res) ->
 # Gets a single user by id
 exports.get_user_from_id = (req, res) ->
     User.findOne { sessionid: req.body.id }, (err, user) ->
+        if err
+            logger.error err
+
         res.send user
 
 
 # Returns a user from their username
 exports.get_user_from_username = (req, res) ->
     User.findOne { username: req.params.username }, (err, user) ->
+        if err
+            logger.error err
+
         res.send user
