@@ -87,7 +87,7 @@ exports.objects = (req, res) ->
 
     sort_var = req.body.sort_var
     if req.body.sort == 'true'
-        console.log 'Sorting'
+        winston.log 'debug', 'Sorting'
         _orion_base = 'object_info.orion.'
         _mcmc_base = 'object_info.mcmc.'
         switch sort_var
@@ -106,7 +106,7 @@ exports.objects = (req, res) ->
 
         query.sort sort_var
     else
-        console.log 'Not sorting'
+        winston.log 'debug', 'Not sorting'
 
     query.limit(limit)
 
