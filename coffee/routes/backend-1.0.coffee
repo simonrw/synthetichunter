@@ -83,6 +83,7 @@ User = mongoose.model 'User', userSchema
 # Returns a list of objects which match the input sorting/filtering criteria
 exports.objects = (req, res) ->
     limit = if req.body.limit != undefined then parseInt req.body.limit else 20
+    winston.log 'info', 'Sort limit', { value: limit }
     query = Object.find()
 
     sort_var = req.body.sort_var
