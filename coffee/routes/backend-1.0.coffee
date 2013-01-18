@@ -123,6 +123,7 @@ exports.detail = (req, res) ->
         if err
             winston.log 'error', err
 
+        winston.log 'info', 'Getting object info', { "function": "exports.detail", id: req.params.id }
         res.send result
 
 # Returns just the required information for an objects transit images
