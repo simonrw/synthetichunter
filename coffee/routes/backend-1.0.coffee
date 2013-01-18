@@ -157,6 +157,12 @@ exports.update = (req, res) ->
                 value: value
             }
 
+        # Now save the object
+        result.save (err) ->
+            if err
+                console.log err
+
+            res.send 'Ok'
 
 
 exports.user = (req, res) ->
