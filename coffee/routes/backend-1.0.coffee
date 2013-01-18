@@ -1,10 +1,7 @@
 os = require 'os'
 
-# Set up winston
-winston = require 'winston'
-
-# Only log to a file
-winston.add winston.transports.File, { filename: "hunter.log" }
+# Set up logger
+logger = require('../logger').logger
 
 mongoose = require 'mongoose'
 
@@ -16,7 +13,7 @@ if hostname == 'mbp.local' or hostname == 'sirius'
 else
     server_url = 'sirius.astro.warwick.ac.uk'
 
-winston.log 'info', "Connecting to mongo on hostname: #{server_url}"
+logger.log 'info', "Connecting to mongo on hostname: #{server_url}"
 
 # Some configuration variables
 port = 27017
@@ -27,7 +24,7 @@ db = mongoose.connection
 # Bind error commands to the console
 db.on 'error', console.error.bind console, 'connection error:'
 db.once 'open', ->
-    winston.log 'info', 'Mongo connection open'
+    logger.log 'info', 'Mongo connection open'
 
 # Define the schema
 objectSchema = new mongoose.Schema {
@@ -83,7 +80,7 @@ User = mongoose.model 'User', userSchema
 # Returns a list of objects which match the input sorting/filtering criteria
 exports.objects = (req, res) ->
     limit = if req.body.limit != undefined then parseInt req.body.limit else 20
-    winston.log 'info', 'Sort limit', { value: limit }
+    logger.log 'info', 'Sort limit', { value: limit }
     query = Object.find()
 
     sort_var = req.body.sort_var
@@ -104,16 +101,16 @@ exports.objects = (req, res) ->
         else 
             sort_var = '-' + sort_var
 
-        winston.log 'info', "Sorting", { sort_var: sort_var }
+        logger.log 'info', "Sorting", { sort_var: sort_var }
         query.sort sort_var
     else
-        winston.log 'info', 'Not sorting'
+        logger.log 'info', 'Not sorting'
 
     query.limit(limit)
 
     query.exec (err, results) ->
         if err
-            winston.log 'error', err
+            logger.log 'error', err
 
         res.send results
 
@@ -121,23 +118,23 @@ exports.objects = (req, res) ->
 exports.detail = (req, res) ->
     Object.findById req.params.id, (err, result) ->
         if err
-            winston.log 'error', err
+            logger.log 'error', err
 
-        winston.log 'info', 'Getting object info', { "function": "detail", id: req.params.id }
+        logger.log 'info', 'Getting object info', { "function": "detail", id: req.params.id }
         res.send result
 
 # Returns just the required information for an objects transit images
 exports.transits = (req, res) ->
     Object.findById req.params.id, (err, result) ->
         if err
-            winston.log 'error', err
+            logger.log 'error', err
 
         object = {
             obj_id: result.obj_id
             tr_filenames: result.file_info.tr_filenames
         }
 
-        winston.log 'info', 'Getting transits', { "function": "transits", id: req.params.id, obj_id: result.obj_id }
+        logger.log 'info', 'Getting transits', { "function": "transits", id: req.params.id, obj_id: result.obj_id }
 
         res.send object
 
@@ -149,14 +146,14 @@ exports.update = (req, res) ->
 
     Object.findById id, (err, result) ->
         if err
-            winston.log 'error', err
+            logger.log 'error', err
 
         found = false
         for user_info, i in result.user_info
             if user_info.sessionid == user
                 # Change the value
                 
-                winston.log 'info', "Updating value", { 
+                logger.log 'info', "Updating value", { 
                     user: user
                     before: result.user_info[i].value
                     after: value
@@ -168,7 +165,7 @@ exports.update = (req, res) ->
 
         if not found
             # Have to append the result to the array
-            winston.log 'info', "Appending the user's info", {
+            logger.log 'info', "Appending the user's info", {
                 user: user
                 after: value
                 id: id
@@ -182,7 +179,7 @@ exports.update = (req, res) ->
         # Now save the object
         result.save (err) ->
             if err
-                winston.log 'error', err
+                logger.log 'error', err
 
             res.send 'Ok'
 
@@ -194,18 +191,18 @@ exports.user = (req, res) ->
 
     User.findOne { username: username, sessionid: sessionid }, (err, result) ->
         if err
-            winston.log 'error', err
+            logger.log 'error', err
 
         if result?
             User.findOne { sessionid: sessionid }, (err, result) ->
                 if err
-                    winston.log 'error', err
+                    logger.log 'error', err
 
                 if result.username != username
                     result.username = username
                     result.save (err) ->
                         if err
-                            winston.log 'error', err
+                            logger.log 'error', err
 
                         res.send {
                             message: "Updated"
@@ -214,7 +211,7 @@ exports.user = (req, res) ->
         else
             User({ username: username, sessionid: sessionid }).save (err) ->
                 if err
-                    winston.log 'error', err
+                    logger.log 'error', err
 
                     res.send {
                         message: "Inserted"
