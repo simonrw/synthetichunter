@@ -141,12 +141,7 @@ exports.update = (req, res) ->
         if err
             console.log err
 
-        result.user_info[user] = value
-        result.save (err) ->
-            if err
-                console.log err
-
-            res.send 'Ok'
+        res.send 'Ok'
 
 
 exports.user = (req, res) ->
