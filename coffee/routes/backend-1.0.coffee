@@ -194,6 +194,7 @@ exports.user = (req, res) ->
             logger.error err
 
         if result?
+            logger.info 'Found user', { username: username, sessionid: sessionid }
             User.findOne { sessionid: sessionid }, (err, result) ->
                 if err
                     logger.error err
@@ -209,6 +210,7 @@ exports.user = (req, res) ->
                         }
 
         else
+            logger.info 'No user found, adding', { username: username, sessionid: sessionid }
             User({ username: username, sessionid: sessionid }).save (err) ->
                 if err
                     logger.error err
