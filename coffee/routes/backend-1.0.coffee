@@ -1,5 +1,11 @@
 os = require 'os'
 
+# Set up winston
+winston = require 'winston'
+
+# Only log to a file
+winston.add winston.transports.File { filename: "hunter.log" }
+
 mongoose = require 'mongoose'
 
 
