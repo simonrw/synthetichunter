@@ -185,41 +185,40 @@ exports.update = (req, res) ->
 
 
 exports.user = (req, res) ->
-    #mongo_connection 'users', (collection) ->
     username = req.body.username
     sessionid = req.body.sessionid
 
-    User.findOne { username: username, sessionid: sessionid }, (err, result) ->
+    User.findOne { sessionid: sessionid }, (err, result) ->
         if err
             logger.error err
 
-        if result?
-            logger.info 'Found user', { username: username, sessionid: sessionid }
-            User.findOne { sessionid: sessionid }, (err, result) ->
-                if err
-                    logger.error err
+        logger.info 'User query', { 
+            sessionid: sessionid
+            found: result?
+        }
 
-                if result.username != username
-                    result.username = username
-                    result.save (err) ->
-                        if err
-                            logger.error err
-
-                        res.send {
-                            message: "Updated"
-                        }
-
-        else
-            logger.info 'No user found, adding', { username: username, sessionid: sessionid }
+        if not result?
             User({ username: username, sessionid: sessionid }).save (err) ->
                 if err
                     logger.error err
+            logger.info 'New user saved', { 
+                username: username
+                sessionid: sessionid 
+            }
 
-                    res.send {
-                        message: "Inserted"
-                        username: username
-                        sessionid: sessionid
-                    }
+        else
+            old_username = result.username
+            result.username = username
+            result.save (err) ->
+                if err
+                    logger.error err
+
+                logger.info 'Username updated', { 
+                    old: old_username
+                    new: username
+                    sessionid: sessionid
+                }
+
 
 # Gets a single user by id
 exports.get_user_from_id = (req, res) ->
