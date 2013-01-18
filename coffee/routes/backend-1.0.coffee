@@ -112,7 +112,7 @@ exports.objects = (req, res) ->
 
     query.exec (err, results) ->
         if err
-            console.log err
+            winston.log 'error', err
 
         res.send results
 
@@ -120,7 +120,7 @@ exports.objects = (req, res) ->
 exports.detail = (req, res) ->
     Object.findById req.params.id, (err, result) ->
         if err
-            console.log err
+            winston.log 'error', err
 
         res.send result
 
@@ -128,7 +128,7 @@ exports.detail = (req, res) ->
 exports.transits = (req, res) ->
     Object.findById req.params.id, (err, result) ->
         if err
-            console.log err
+            winston.log 'error', err
 
         object = {
             obj_id: result.obj_id
@@ -145,7 +145,7 @@ exports.update = (req, res) ->
 
     Object.findById id, (err, result) ->
         if err
-            console.log err
+            winston.log 'error', err
 
         found = false
         for user_info, i in result.user_info
@@ -166,7 +166,7 @@ exports.update = (req, res) ->
         # Now save the object
         result.save (err) ->
             if err
-                console.log err
+                winston.log 'error', err
 
             res.send 'Ok'
 
@@ -178,18 +178,18 @@ exports.user = (req, res) ->
 
     User.findOne { username: username, sessionid: sessionid }, (err, result) ->
         if err
-            console.log err
+            winston.log 'error', err
 
         if result?
             User.findOne { sessionid: sessionid }, (err, result) ->
                 if err
-                    console.log err
+                    winston.log 'error', err
 
                 if result.username != username
                     result.username = username
                     result.save (err) ->
                         if err
-                            console.log err
+                            winston.log 'error', err
 
                         res.send {
                             message: "Updated"
@@ -198,7 +198,7 @@ exports.user = (req, res) ->
         else
             User({ username: username, sessionid: sessionid }).save (err) ->
                 if err
-                    console.log err
+                    winston.log 'error', err
 
                     res.send {
                         message: "Inserted"
