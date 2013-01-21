@@ -22,12 +22,82 @@ from matplotlib.ticker import ScalarFormatter
 from multiprocessing import Pool
 from srw.constants import *
 import os
-from CreateTransitPlots import analyse_data_object
 from random import random
 
 BASEDIR = os.path.dirname(__file__)
 IMAGEDIR = os.path.join(BASEDIR, 'images')
 FIGURESIZE = (8, 5)
+
+def to_phase(t, epoch, period):
+    return (t - epoch) / period
+
+def next_mid_transit(hjd, epoch, period):
+    '''
+    Generates mid-transit points for a lightcurve
+    '''
+    # Get the first mid transit after the data starts
+    start, end = hjd.min(), hjd.max()
+    current = epoch
+
+    # Rewind the `current` value to the first point enclosed by the data
+    phase_min = to_phase(start, epoch, period)
+    if phase_min < 0:
+        phase_start = np.ceil(phase_min)
+    else:
+        phase_start = np.floor(phase_min)
+
+    current = phase_start * period + epoch
+
+    while current < end:
+        yield current
+        current += period
+
+def generate_images(hjd, flux, period, epoch, twidth, outdir,
+        out_base, detect_width=3):
+    '''
+    Generates images of any transits which have data within +-`detect_width
+    * twidth` of the mid-transit point and render to `outdir`
+    '''
+    ii = 0
+    out_names = []
+    for t0 in next_mid_transit(hjd, epoch, period):
+        # Indices for the in transit points
+        ind = ((hjd >= t0 - detect_width * twidth) &
+                (hjd <= t0 + detect_width * twidth))
+
+        if ind.any():
+            slice_hjd = hjd[ind] - t0
+            slice_flux = flux[ind]
+
+            plt.plot(slice_hjd, slice_flux, 'r.', ms=5)
+            plt.axvline(0)
+            plt.axvline(-twidth / 2.)
+            plt.axvline(twidth / 2.)
+            plt.xlim(-detect_width * twidth, detect_width * twidth)
+            plt.ylim(0.1, -0.1)
+            plt.xlabel(r'HJD - {0}'.format(t0))
+            out_name = os.path.join(outdir,
+                out_base + '_' + str(ii) + '.png')
+            plt.savefig(out_name)
+            plt.close()
+            ii += 1
+            out_names.append(os.path.realpath(out_name))
+
+    return out_names
+
+
+def analyse_data_object(out_name_base, lightcurves_data, period, epoch, width):
+    '''
+    Given the lightcurve data, plot the object's transits
+    '''
+    hjd, mags = lightcurves_data
+    return generate_images(hjd, mags, period, epoch, width,
+            os.path.dirname(out_name_base), os.path.basename(out_name_base))
+
+
+
+
+
 
 def bin_data(xdata, ydata, nbins, x_range=(-0.2, 0.8)):
     '''
