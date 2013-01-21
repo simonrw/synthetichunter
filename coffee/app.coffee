@@ -26,7 +26,7 @@ worker_process = () ->
         app.use express.methodOverride()
         app.use express.cookieParser()
         app.use express.session {
-            secret: 'huntersecret'
+            secret: '15e6a705-6424-11e2-b1dd-d49a20b7f7f2'
             store: new MongoStore db_config
         }
         app.use app.router
