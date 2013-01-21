@@ -3,23 +3,12 @@ extends layout
 block content
     .container
         .row
-            .span12
-                h1(data-bind='text: obj_id')
-                
-                a(data-bind='attr: { href: $data.id() + "/transits" }') Transits
-
-        .row
-            .span12
+            .span6
                 #viable
-                    label Viable? 
-                    label(for='yes-option', class='radio') Yes
-                        input(type='radio', data-bind='checked: viable_result', value='y', name='viable', id='yes-option')
-                    label(for='maybe-option', class='radio') Maybe
-                        input(type='radio', data-bind='checked: viable_result', value='m', name='viable', id='maybe-option')
-                    label(for='no-option', class='radio') No
-                        input(type='radio', data-bind='checked: viable_result', value='n', name='viable', id='no-option')
-                    label(for='no-option', class='radio') Undecided
-                        input(type='radio', data-bind='checked: viable_result', value='undecided', name='viable', id='no-option')
+                    include includes/viable_form
+            .span6
+                a(data-bind='attr: { href: $data.id() + "/transits" }', class='btn btn-primary pull-right') Transits
+
 
         .row
             .span12
