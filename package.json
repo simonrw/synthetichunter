@@ -10,7 +10,7 @@
     "jade": "*",
     "mongoose": "~3.5.4",
     "winston": "~0.6.2",
-    "express-session-mongo": "0.0.1",
-    "mongodb": "~1.2.9"
+    "mongodb": "~1.2.9",
+    "connect-mongo": "~0.3.2",
   }
 }
