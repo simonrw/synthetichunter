@@ -303,6 +303,7 @@ def analyse_file(filename, db):
                             'teff': cat_val(teff_jh),
                             },
                         },
+                    'user_info': [],
                     })
 
                 #if len(all_objects) >= 10:
