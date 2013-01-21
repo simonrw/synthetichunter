@@ -3,14 +3,22 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app"
+    "start": "node app.js"
   },
   "dependencies": {
     "express": "3.0.6",
     "jade": "*",
     "mongoose": "~3.5.4",
     "winston": "~0.6.2",
-    "mongodb": "~1.2.9",
-    "connect-mongo": "~0.3.2",
-  }
+    "connect-mongo": "~0.3.2"
+  },
+  "description": "Synthetic hunter ================",
+  "main": "app.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:srwalker101/synthetichunter.git"
+  },
+  "author": "Simon Walker",
+  "license": "BSD"
 }
