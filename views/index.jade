@@ -16,22 +16,7 @@ block content
                           a(data-bind='attr: { href: "results/" + $data._id() }')
                               img(data-bind='attr: { src: $data.pgram_filename }', class='thumbnail')
                       li.span7
-                          form(data-bind='submit: function() {}', class='form')
-                              .control-group
-                                  label(class='control-label') Viable?
-                                  .controls
-                                      label(class='radio inline')
-                                          input(type='radio', value='y', class='radio inline', data-bind='checked: $data.viable_result')
-                                          | Yes 
-                                      label(class='radio inline')
-                                          input(type='radio', value='m', class='radio inline', data-bind='checked: $data.viable_result')
-                                          | Maybe 
-                                      label(class='radio inline')
-                                          input(type='radio', value='n', class='radio inline', data-bind='checked: $data.viable_result')
-                                          | No 
-                                      label(class='radio inline')
-                                          input(type='radio', value='undecided', class='radio inline', data-bind='checked: $data.viable_result')
-                                          | Undecided 
+                          include includes/viable_form
 
 
 
