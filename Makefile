@@ -25,7 +25,7 @@ coffee:
 
 deps:
 	@echo "Fetching dependencies"
-	@npm install
+	@LINK=g++ npm install
 
 help:
 	@echo $(HELPTEXT)
