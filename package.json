@@ -9,6 +9,7 @@
     "express": "3.0.6",
     "jade": "*",
     "mongoose": "~3.5.4",
-    "winston": "~0.6.2"
+    "winston": "~0.6.2",
+    "express-session-mongo": "0.0.1"
   }
 }
