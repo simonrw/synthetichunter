@@ -3,15 +3,12 @@ extends layout
 block content
     .container
         .row
-            .span12
-                h1(data-bind='text: obj_id')
-                
-                a(data-bind='attr: { href: $data.id() + "/transits" }') Transits
-
-        .row
-            .span12
+            .span6
                 #viable
                     include includes/viable_form
+            .span6
+                a(data-bind='attr: { href: $data.id() + "/transits" }', class='pull-right') Transits
+
 
         .row
             .span12
