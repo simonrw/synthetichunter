@@ -5,7 +5,6 @@ This code creates the mongo and mongoose connections to a common database
 logger = require('./logger').logger
 mongoose = require 'mongoose'
 os = require 'os'
-mongodb = require 'mongodb'
 
 # Development/Production check
 hostname = os.hostname()
@@ -19,12 +18,17 @@ logger.log 'info', "Connecting to mongo on hostname: #{server_url}"
 # Some configuration variables
 port = 27017
 db_name = 'hunter'
+
+exports.session_db_config = {
+    db: 'huntersessions'
+    host: server_url
+    port: port
+    collection: 'sessions'
+}
+
+
 mongoose.connect "mongodb://#{server_url}:#{port}/#{db_name}"
 
-# Now set up the session store
-exports.sessionServer = new mongodb.Server( server_url, port, { auto_reconnect: true })
-
-# Exports
 exports.db = mongoose.connection
 
 

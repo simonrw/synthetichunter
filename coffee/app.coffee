@@ -10,8 +10,8 @@ http = require 'http'
 cluster = require 'cluster'
 numCPUs = require('os').cpus().length
 path = require 'path'
-sessionServer = require('./lib/mongoconnection').sessionServer
-MongoStore = require 'express-session-mongo'
+db_config = require('./lib/mongoconnection').session_db_config
+MongoStore = require('connect-mongo')(express)
 
 worker_process = () ->
     app = express()
@@ -25,11 +25,9 @@ worker_process = () ->
         app.use express.bodyParser()
         app.use express.methodOverride()
         app.use express.cookieParser()
-        app.use express.session { 
-            secret: 'SyntheticHunter'
-            store: new MongoStore { 
-                server: sessionServer 
-            }
+        app.use express.session {
+            secret: 'huntersecret'
+            store: new MongoStore db_config
         }
         app.use app.router
         app.use express.static path.join __dirname, 'public'
