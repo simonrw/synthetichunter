@@ -1,25 +1,10 @@
 os = require 'os'
 
 # Set up logger
-logger = require('../logger').logger
-
 mongoose = require 'mongoose'
+logger = require('../lib/logger').logger
+db = require('../lib/mongoconnection').db
 
-
-# Development/Production check
-hostname = os.hostname()
-if hostname == 'mbp.local' or hostname == 'sirius' or hostname == 'mbp.lan'
-    server_url = 'localhost'
-else
-    server_url = 'sirius.astro.warwick.ac.uk'
-
-logger.log 'info', "Connecting to mongo on hostname: #{server_url}"
-
-# Some configuration variables
-port = 27017
-db_name = 'hunter'
-mongoose.connect "mongodb://#{server_url}:#{port}/#{db_name}"
-db = mongoose.connection
 
 # Bind error commands to the console
 db.on 'error', console.error.bind console, 'connection error:'
