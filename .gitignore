@@ -14,3 +14,4 @@ images
 logger.js
 hunter.log
 data.fits
+lib/*.js
