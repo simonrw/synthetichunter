@@ -5,7 +5,7 @@ class ObjectInfo
         self.lc_filename = ko.observable image_path data.file_info.lc_filename
         self.pgram_filename = ko.observable image_path data.file_info.pg_filename
 
-        self.viable_result = ko.observable('y')
+        self.viable_result = ko.observable('undecided')
 
         belief = user_belief data, sessionid
         if belief?
