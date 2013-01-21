@@ -12,7 +12,7 @@ class ObjectInformation
         self.orion_values = ko.observableArray([])
 
         # Viable option
-        self.viable_result = ko.observable('y')
+        self.viable_result = ko.observable('undecided')
 
         $.getJSON '/api/1.0/objects/' + id, (results) ->
 
