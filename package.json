@@ -10,7 +10,8 @@
     "jade": "*",
     "mongoose": "~3.5.4",
     "winston": "~0.6.2",
-    "connect-mongo": "~0.3.2"
+    "connect-mongo": "~0.3.2",
+    "cluster2": "~0.3.8"
   },
   "description": "Synthetic hunter ================",
   "main": "app.js",
