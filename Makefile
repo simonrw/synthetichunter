@@ -13,7 +13,7 @@ HELPTEXT = "\
 
 .PHONY: server coffee deps help
 
-all: | coffee server
+all: | deps coffee server
 
 server:
 	@echo "Running server"
