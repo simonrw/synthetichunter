@@ -11,6 +11,7 @@ Cluster = require 'cluster2'
 numCPUs = require('os').cpus().length
 path = require 'path'
 db_config = require('./lib/mongoconnection').session_db_config
+logger = require('./lib/logger').logger
 MongoStore = require('connect-mongo')(express)
 
 app = express()
