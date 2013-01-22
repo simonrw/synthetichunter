@@ -7,60 +7,59 @@ express = require 'express'
 frontend = require './routes/frontend'
 backend = require './routes/backend-' + backend_version
 http = require 'http'
-cluster = require 'cluster'
+Cluster = require 'cluster2'
 numCPUs = require('os').cpus().length
 path = require 'path'
 db_config = require('./lib/mongoconnection').session_db_config
 MongoStore = require('connect-mongo')(express)
 
-worker_process = () ->
-    app = express()
+app = express()
 
-    app.configure () ->
-        app.set 'port', process.env.PORT || 3000
-        app.set 'views', __dirname + '/views'
-        app.set 'view engine', 'jade'
-        app.use express.favicon()
-        app.use express.logger 'dev'
-        app.use express.bodyParser()
-        app.use express.methodOverride()
-        app.use express.cookieParser()
-        app.use express.session {
-            secret: '15e6a705-6424-11e2-b1dd-d49a20b7f7f2'
-            store: new MongoStore db_config
-        }
-        app.use app.router
-        app.use express.static path.join __dirname, 'public'
-
-
-    app.configure 'development', () ->
-        app.use express.errorHandler()
-
-    app.get '/', frontend.index
-    app.get '/results', frontend.results
-    app.get '/results/:id', frontend.object
-    app.get '/results/:id/transits', frontend.transits
-
-    app.post api_path() + '/objects', backend.objects
-    app.get api_path() + '/objects/:id', backend.detail
-    app.get api_path() + '/objects/:id/transits', backend.transits
-    app.put api_path() + '/objects/:id', backend.update
-
-    app.post api_path() + '/user', backend.user
-    app.get api_path() + '/user/:username', backend.get_user_from_username
-    app.post api_path() + '/user/id', backend.get_user_from_id
+app.configure () ->
+    app.set 'port', process.env.PORT || 3000
+    app.set 'views', __dirname + '/views'
+    app.set 'view engine', 'jade'
+    app.use express.favicon()
+    app.use express.logger 'dev'
+    app.use express.bodyParser()
+    app.use express.methodOverride()
+    app.use express.cookieParser()
+    app.use express.session {
+        secret: '15e6a705-6424-11e2-b1dd-d49a20b7f7f2'
+        store: new MongoStore db_config
+    }
+    app.use app.router
+    app.use express.static path.join __dirname, 'public'
 
 
-    http.createServer(app).listen(app.get('port'), () ->
-        console.log 'Express server listening on port ' + app.get 'port'
-    )
+app.configure 'development', () ->
+    app.use express.errorHandler()
 
-if process.env.MULTI != undefined
-    if cluster.isMaster
-        for cpu in [1..numCPUs]
-            cluster.fork()
+app.get '/', frontend.index
+app.get '/results', frontend.results
+app.get '/results/:id', frontend.object
+app.get '/results/:id/transits', frontend.transits
 
-    else
-        worker_process()
-else
-    worker_process()
+app.post api_path() + '/objects', backend.objects
+app.get api_path() + '/objects/:id', backend.detail
+app.get api_path() + '/objects/:id/transits', backend.transits
+app.put api_path() + '/objects/:id', backend.update
+
+app.post api_path() + '/user', backend.user
+app.get api_path() + '/user/:username', backend.get_user_from_username
+app.post api_path() + '/user/id', backend.get_user_from_id
+
+# Start the app with cluster
+c = new Cluster {
+    port: app.get 'port'
+}
+
+# Cluster events
+c.on 'forked', (pid) ->
+    logger.info 'Server process forked', { pid: pid }
+
+c.on 'died', (pid) ->
+    logger.info 'Server process died', { pid: pid }
+
+c.listen (cb) ->
+    cb app
