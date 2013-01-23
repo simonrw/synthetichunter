@@ -7,7 +7,6 @@ express = require 'express'
 frontend = require './routes/frontend'
 backend = require './routes/backend-' + backend_version
 http = require 'http'
-Cluster = require 'cluster2'
 numCPUs = require('os').cpus().length
 path = require 'path'
 db_config = require('./lib/mongoconnection').session_db_config
@@ -50,17 +49,5 @@ app.post api_path() + '/user', backend.user
 app.get api_path() + '/user/:username', backend.get_user_from_username
 app.post api_path() + '/user/id', backend.get_user_from_id
 
-# Start the app with cluster
-c = new Cluster {
-    port: app.get 'port'
-}
-
-# Cluster events
-c.on 'forked', (pid) ->
-    logger.info 'Server process forked', { pid: pid }
-
-c.on 'died', (pid) ->
-    logger.info 'Server process died', { pid: pid }
-
-c.listen (cb) ->
-    cb app
+app.listen app.get('port'), ->
+    logger.info "Server listening on port #{app.get 'port'}"
