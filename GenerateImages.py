@@ -202,6 +202,8 @@ def analyse_file(filename, db):
 
         mcmc_radius = candidates.field('mcmc_rplanet')
         mcmc_rstar = candidates.field('mcmc_rstar')
+        orion_period = catalogue.field('period')
+        orion_epoch = catalogue.field('epoch')
 
 
 
@@ -261,7 +263,7 @@ def analyse_file(filename, db):
                 #pgram_data = pgram_dchisq[pgram_index[ind][pmatchind]]
                 pgram_data = pgram_dchisq[mcmc_val(pgram_index)]
 
-                matching = match(mcmc_val(mcmc_period),
+                matching = match(mcmc_val(orion_period),
                         cat_val(fake_period))
 
                 # Generate the periodogram
@@ -269,7 +271,7 @@ def analyse_file(filename, db):
                 plt.plot(pgram_period, pgram_data, 'k-')
                 plt.xlabel(r'Orbital period / days')
                 plt.ylabel(r'$\Delta \chi^2$')
-                plt.axvline(mcmc_val(mcmc_period), zorder=-10)
+                plt.axvline(mcmc_val(orion_period), zorder=-10)
                 plt.savefig(pgram_filename(filename, obj_id))
                 plt.close()
 
@@ -277,7 +279,7 @@ def analyse_file(filename, db):
                 object_hjd = hjd[mcmc_val(lc_index)].astype(float)
                 object_mag = mag[mcmc_val(lc_index)].astype(float)
 
-                phase = (wd2jd(object_hjd) - float(2450000.0 + mcmc_val(mcmc_epoch))) / float(mcmc_val(mcmc_period))
+                phase = (wd2jd(object_hjd) - float(2450000.0 + mcmc_val(orion_epoch))) / float(mcmc_val(orion_period))
                 phase[phase < 0] += 1.0
                 phase = phase % 1
                 phase[phase > 0.8] -= 1.0
@@ -296,35 +298,35 @@ def analyse_file(filename, db):
                 plt.close()
 
                 # Plot the parameter space data
-                plt.figure(figsize=FIGURESIZE)
-                plt.axvline(cat_val(fake_period), color='r')
-                plt.axhline(cat_val(fake_radius), color='r')
-                plt.axvline(mcmc_val(mcmc_period), color='g')
-                plt.axhline(mcmc_val(mcmc_radius), color='g')
-                plt.plot([cat_val(fake_period), ], [cat_val(fake_radius), ],
-                        'ro', ms=5, mec='k')
-                plt.plot([mcmc_val(mcmc_period), ], [mcmc_val(mcmc_radius), ],
-                        'go', ms=5, mec='k')
-                plt.yscale('log')
-                plt.xscale('log')
-                plt.xlim(0.1, 10)
-                plt.ylim(0.1, 6)
-                #plt.gca().xaxis.set_major_formatter(ScalarFormatter())
-                #plt.gca().yaxis.set_major_formatter(ScalarFormatter())
-                plt.xticks([0.1, 0.5, 1, 2, 5, 10], map(str, [0.1, 0.5, 1, 2, 5, 10]))
-                plt.yticks([0.1, 0.5, 1, 2, 5], map(str, [0.1, 0.5, 1, 2, 5]))
-                plt.grid(True, which='both')
-                plt.xlabel(r'Orbital period')
-                plt.ylabel(r'Planetary radius')
-                plt.savefig(phase_filename(filename, obj_id))
-                plt.close()
+                #plt.figure(figsize=FIGURESIZE)
+                #plt.axvline(cat_val(fake_period), color='r')
+                #plt.axhline(cat_val(fake_radius), color='r')
+                #plt.axvline(mcmc_val(mcmc_period), color='g')
+                #plt.axhline(mcmc_val(mcmc_radius), color='g')
+                #plt.plot([cat_val(fake_period), ], [cat_val(fake_radius), ],
+                        #'ro', ms=5, mec='k')
+                #plt.plot([mcmc_val(mcmc_period), ], [mcmc_val(mcmc_radius), ],
+                        #'go', ms=5, mec='k')
+                #plt.yscale('log')
+                #plt.xscale('log')
+                #plt.xlim(0.1, 10)
+                #plt.ylim(0.1, 6)
+                ##plt.gca().xaxis.set_major_formatter(ScalarFormatter())
+                ##plt.gca().yaxis.set_major_formatter(ScalarFormatter())
+                #plt.xticks([0.1, 0.5, 1, 2, 5, 10], map(str, [0.1, 0.5, 1, 2, 5, 10]))
+                #plt.yticks([0.1, 0.5, 1, 2, 5], map(str, [0.1, 0.5, 1, 2, 5]))
+                #plt.grid(True, which='both')
+                #plt.xlabel(r'Orbital period')
+                #plt.ylabel(r'Planetary radius')
+                #plt.savefig(phase_filename(filename, obj_id))
+                #plt.close()
 
                 # Generate the individual transit images
                 tr_image_names = analyse_data_object(
                         tr_filename_base(filename, obj_id),
                         [wd2jd(object_hjd), object_mag],
-                        mcmc_val(mcmc_period),
-                        2450000.0 + mcmc_val(mcmc_epoch),
+                        mcmc_val(orion_period),
+                        2450000.0 + mcmc_val(orion_epoch),
                         mcmc_val(mcmc_width),
                         )
 
