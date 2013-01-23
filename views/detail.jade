@@ -12,13 +12,13 @@ block content
 
         .row
             .span12
-                #mcmc-results
+                #orion-results
                     table(class='table table-bordered')
                         thead
-                            tr(data-bind='foreach: mcmc_titles')
+                            tr(data-bind='foreach: orion_titles')
                                 td(data-bind='text: $data')
                         tbody
-                            tr(data-bind='foreach: mcmc_values')
+                            tr(data-bind='foreach: orion_values')
                                 td(data-bind='text: $data')
 
 
@@ -35,13 +35,13 @@ block content
 
         .row
             .span12
-                #orion-results
+                #mcmc-results
                     table(class='table table-bordered')
                         thead
-                            tr(data-bind='foreach: orion_titles')
+                            tr(data-bind='foreach: mcmc_titles')
                                 td(data-bind='text: $data')
                         tbody
-                            tr(data-bind='foreach: orion_values')
+                            tr(data-bind='foreach: mcmc_values')
                                 td(data-bind='text: $data')
 
 
