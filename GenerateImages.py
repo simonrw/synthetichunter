@@ -202,8 +202,9 @@ def analyse_file(filename, db):
 
         mcmc_radius = candidates.field('mcmc_rplanet')
         mcmc_rstar = candidates.field('mcmc_rstar')
-        orion_period = catalogue.field('period')
-        orion_epoch = catalogue.field('epoch')
+        orion_period = candidates.field('period')
+        orion_epoch = candidates.field('epoch')
+        orion_depth = candidates.field('depth')
 
 
 
@@ -271,7 +272,7 @@ def analyse_file(filename, db):
                 plt.plot(pgram_period, pgram_data, 'k-')
                 plt.xlabel(r'Orbital period / days')
                 plt.ylabel(r'$\Delta \chi^2$')
-                plt.axvline(mcmc_val(orion_period), zorder=-10)
+                plt.axvline(mcmc_val(orion_period) / secondsInDay, zorder=-10)
                 plt.savefig(pgram_filename(filename, obj_id))
                 plt.close()
 
@@ -279,7 +280,13 @@ def analyse_file(filename, db):
                 object_hjd = hjd[mcmc_val(lc_index)].astype(float)
                 object_mag = mag[mcmc_val(lc_index)].astype(float)
 
-                phase = (wd2jd(object_hjd) - float(2450000.0 + mcmc_val(orion_epoch))) / float(mcmc_val(orion_period))
+                # Convert to jd
+                object_hjd = wd2jd(object_hjd)
+                epoch_val = wd2jd(float(mcmc_val(orion_epoch)))
+                period_val = mcmc_val(orion_period) / secondsInDay
+
+
+                phase = (object_hjd - epoch_val) / period_val
                 phase[phase < 0] += 1.0
                 phase = phase % 1
                 phase[phase > 0.8] -= 1.0
