@@ -264,7 +264,7 @@ def analyse_file(filename, db):
                 #pgram_data = pgram_dchisq[pgram_index[ind][pmatchind]]
                 pgram_data = pgram_dchisq[mcmc_val(pgram_index)]
 
-                matching = match(mcmc_val(orion_period),
+                matching = match(mcmc_val(orion_period) / secondsInDay,
                         cat_val(fake_period))
 
                 # Generate the periodogram
