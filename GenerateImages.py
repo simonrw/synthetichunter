@@ -222,8 +222,6 @@ def analyse_file(filename, db):
         ind &= (mcmc_dchisq_mr < 7.)
         ind &= (clump_idx < 0.25)
 
-        pmatchind = match(mcmc_period[ind], fake_period[cat_index][ind])
-
         # Periodogram data
         pgram_period = infile['periods'].data.field('period')[0] / secondsInDay
         pgram_dchisq = infile['periodograms'].data.field('chisq')
@@ -234,19 +232,19 @@ def analyse_file(filename, db):
 
         all_objects = []
 
-        if pmatchind.any():
-            objects = obj_id[ind][pmatchind]
-            p_objects = infile['periodograms'].data.field('obj_id')[pgram_index[ind][pmatchind]]
+        if ind.any():
+            objects = obj_id[ind]
+            p_objects = infile['periodograms'].data.field('obj_id')[pgram_index[ind]]
 
             lightcurves_hdu = infile['lightcurves'].data
             hjd = lightcurves_hdu.field('hjd')
             mag = lightcurves_hdu.field('mag')
             mag_err = lightcurves_hdu.field('mag_err')
 
-            assert objects.size == np.arange(obj_id.size)[ind][pmatchind].size
+            assert objects.size == np.arange(obj_id.size)[ind].size
 
             for obj_id, p_obj_id, index in zip(objects, p_objects,
-                    np.arange(obj_id.size)[ind][pmatchind])[:3]:
+                    np.arange(obj_id.size)[ind]):
 
                 assert obj_id == p_obj_id
 
@@ -262,6 +260,9 @@ def analyse_file(filename, db):
 
                 #pgram_data = pgram_dchisq[pgram_index[ind][pmatchind]]
                 pgram_data = pgram_dchisq[mcmc_val(pgram_index)]
+
+                matching = match(mcmc_val(mcmc_period),
+                        cat_val(fake_period))
 
                 # Generate the periodogram
                 plt.figure(figsize=FIGURESIZE)
@@ -339,6 +340,7 @@ def analyse_file(filename, db):
                         'data_filename': os.path.realpath(filename),
                         'tr_filenames': tr_image_names,
                     },
+                    'object_type': 'synthetic' if matching else 'other',
                     #'plot_data': {
                         #'pgram': {
                             #'x': list(pgram_period),
