@@ -52,7 +52,7 @@ objectSchema = new mongoose.Schema {
         obj_id: String
     }
     random: Number
-    user_info: [ { sessionid: String, value: String } ]
+    user_info: [ { sessionid: String, value: String, timestamp: Date } ]
 }
 userSchema = new mongoose.Schema {
     username: String
@@ -146,6 +146,7 @@ exports.update = (req, res) ->
                 }
 
                 result.user_info[i].value = value
+                result.user_info[i].timestamp = Date()
                 found = true
 
         if not found
@@ -159,6 +160,7 @@ exports.update = (req, res) ->
             result.user_info.push {
                 sessionid: user
                 value: value
+                timestamp: Date()
             }
 
         # Now save the object
