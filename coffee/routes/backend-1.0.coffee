@@ -57,6 +57,7 @@ objectSchema = new mongoose.Schema {
 userSchema = new mongoose.Schema {
     username: String
     sessionid: String
+    time_of_last_change: Date
 }
 
 Object = mongoose.model 'Object', objectSchema
@@ -185,7 +186,7 @@ exports.user = (req, res) ->
         }
 
         if not result?
-            User({ username: username, sessionid: sessionid }).save (err) ->
+            User({ username: username, sessionid: sessionid, time_of_last_change: Date() }).save (err) ->
                 if err
                     logger.error err
             logger.info 'New user saved', { 
@@ -196,6 +197,7 @@ exports.user = (req, res) ->
         else
             old_username = result.username
             result.username = username
+            result.time_of_last_change = Date()
             result.save (err) ->
                 if err
                     logger.error err
