@@ -205,6 +205,7 @@ def analyse_file(filename, db):
         orion_period = candidates.field('period')
         orion_epoch = candidates.field('epoch')
         orion_depth = candidates.field('depth')
+        orion_width = candidates.field('width')
 
 
 
@@ -331,10 +332,10 @@ def analyse_file(filename, db):
                 # Generate the individual transit images
                 tr_image_names = analyse_data_object(
                         tr_filename_base(filename, obj_id),
-                        [wd2jd(object_hjd), object_mag],
-                        mcmc_val(orion_period),
-                        2450000.0 + mcmc_val(orion_epoch),
-                        mcmc_val(mcmc_width),
+                        [object_hjd, object_mag],
+                        period_val,
+                        epoch_val,
+                        mcmc_val(orion_width),
                         )
 
                 collection.insert({
