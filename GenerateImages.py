@@ -130,7 +130,7 @@ def bin_data(xdata, ydata, nbins, x_range=(-0.2, 0.8)):
 
     return [np.array(d) for d in [bx, by, be]]
 
-def match(a, b, toler=0.0001):
+def match(a, b, toler=0.01):
     '''
     Fuzzy matching function
     '''
