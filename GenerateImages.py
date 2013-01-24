@@ -261,9 +261,9 @@ def analyse_file(filename, db):
                             cat_val(fake_period))
                     continue
 
-                #pgram_data = pgram_dchisq[pgram_index[ind][pmatchind]]
                 pgram_data = pgram_dchisq[mcmc_val(pgram_index)]
 
+                # See if the object is the same as inserted
                 matching = match(mcmc_val(orion_period) / secondsInDay,
                         cat_val(fake_period))
 
