@@ -256,7 +256,7 @@ def analyse_file(filename, db):
                 cat_val = lambda arr: float(arr[mcmc_val(cat_index)])
 
                 # Perform an exclusion cut on the period
-                if cat_val(fake_period) < 0.35):
+                if cat_val(fake_period) < 0.35:
                     print 'Skipping object with period of [0]'.format(
                             cat_val(fake_period))
                     continue
