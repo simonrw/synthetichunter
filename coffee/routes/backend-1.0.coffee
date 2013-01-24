@@ -22,23 +22,27 @@ objectSchema = new mongoose.Schema {
         data_filename: String
     }
     object_info: {
+        input: {
+            width: Number
+            epoch: Number
+            a: Number
+            rstar: Number
+            i: Number
+            radius: Number
+            depth: Number
+            period: Number
+        }
         orion: {
             delta_chisq: Number
             vmag: Number
             period: Number
             sde: Number
-            radius: Number
-            a: Number
-            rstar: Number
-            i: Number
-            epoch: Number
-            width: Number
             depth: Number
             ntrans: Number
+            teff: Number
         }
         mcmc: {
             clump_idx: Number
-            teff: Number
             period: Number
             sn_ellipse: Number
             radius: Number
@@ -46,7 +50,6 @@ objectSchema = new mongoose.Schema {
             rstar: Number
             depth: Number
             sn_red: Number
-            epoch: Number
             prob_rp: Number
         }
         obj_id: String
