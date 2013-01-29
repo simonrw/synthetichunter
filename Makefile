@@ -17,7 +17,7 @@ all: | deps coffee server
 
 server:
 	@echo "Running server"
-	@node app.js
+	@coffee app.coffee
 
 coffee: 
 	@echo "Compiling coffeescript files"
