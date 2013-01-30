@@ -191,6 +191,29 @@ def plot_periodogram(period, pgram_data, vline, filename):
     plt.savefig(filename)
     plt.close()
 
+def plot_parameter_space(mcmc_p, mcmc_r, input_p, input_r, filename):
+    plt.figure(figsize=FIGURESIZE)
+    plt.axvline(input_p, color='r')
+    plt.axhline(input_r, color='r')
+    plt.axvline(mcmc_p, color='g')
+    plt.axhline(mcmc_r, color='g')
+    plt.plot([input_p, ], [input_r, ],
+            'ro', ms=5, mec='k')
+    plt.plot([mcmc_p, ], [mcmc_r, ],
+            'go', ms=5, mec='k')
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.xlim(0.1, 10)
+    plt.ylim(0.1, 6)
+    plt.xticks([0.1, 0.5, 1, 2, 5, 10], map(str, [0.1, 0.5, 1, 2, 5, 10]))
+    plt.yticks([0.1, 0.5, 1, 2, 5], map(str, [0.1, 0.5, 1, 2, 5]))
+    plt.grid(True, which='both')
+    plt.xlabel(r'Orbital period')
+    plt.ylabel(r'Planetary radius')
+    plt.savefig(filename)
+    plt.close()
+
+
 
 lc_filename = partial(image_filename, prefix='lc_')
 pgram_filename = partial(image_filename, prefix='pg_')
@@ -343,28 +366,13 @@ def analyse_file(filename, db):
                         )
 
                 # Plot the parameter space data
-                #plt.figure(figsize=FIGURESIZE)
-                #plt.axvline(cat_val(fake_period), color='r')
-                #plt.axhline(cat_val(fake_radius), color='r')
-                #plt.axvline(mcmc_val(mcmc_period), color='g')
-                #plt.axhline(mcmc_val(mcmc_radius), color='g')
-                #plt.plot([cat_val(fake_period), ], [cat_val(fake_radius), ],
-                        #'ro', ms=5, mec='k')
-                #plt.plot([mcmc_val(mcmc_period), ], [mcmc_val(mcmc_radius), ],
-                        #'go', ms=5, mec='k')
-                #plt.yscale('log')
-                #plt.xscale('log')
-                #plt.xlim(0.1, 10)
-                #plt.ylim(0.1, 6)
-                ##plt.gca().xaxis.set_major_formatter(ScalarFormatter())
-                ##plt.gca().yaxis.set_major_formatter(ScalarFormatter())
-                #plt.xticks([0.1, 0.5, 1, 2, 5, 10], map(str, [0.1, 0.5, 1, 2, 5, 10]))
-                #plt.yticks([0.1, 0.5, 1, 2, 5], map(str, [0.1, 0.5, 1, 2, 5]))
-                #plt.grid(True, which='both')
-                #plt.xlabel(r'Orbital period')
-                #plt.ylabel(r'Planetary radius')
-                #plt.savefig(phase_filename(filename, obj_id))
-                #plt.close()
+                plot_parameter_space(
+                        mcmc_val(mcmc_period),
+                        mcmc_val(mcmc_radius),
+                        cat_val(fake_period),
+                        cat_val(fake_radius),
+                        phase_filename(filename, obj_id)
+                        )
 
                 # Generate the individual transit images
                 tr_image_names = analyse_data_object(
