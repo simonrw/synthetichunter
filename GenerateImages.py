@@ -179,6 +179,19 @@ def plot_phase_folded_lightcurve(hjd, mag, period, epoch, filename, nbins=150):
     plt.savefig(filename)
     plt.close()
 
+def plot_periodogram(period, pgram_data, vline, filename):
+    '''
+    Plots the periodogram image
+    '''
+    plt.figure(figsize=FIGURESIZE)
+    plt.plot(period, pgram_data, 'k-')
+    plt.xlabel(r'Orbital period / days')
+    plt.ylabel(r'$\Delta \chi^2$')
+    plt.axvline(vline, zorder=-10)
+    plt.savefig(filename)
+    plt.close()
+
+
 lc_filename = partial(image_filename, prefix='lc_')
 pgram_filename = partial(image_filename, prefix='pg_')
 phase_filename = partial(image_filename, prefix='phase_')
@@ -306,7 +319,21 @@ def analyse_file(filename, db):
                 object_hjd = wd2jd(object_hjd)
                 epoch_val = wd2jd(float(mcmc_val(orion_epoch)))
                 period_val = mcmc_val(orion_period) / secondsInDay
+                pgram_data = pgram_dchisq[mcmc_val(pgram_index)]
 
+                # See if the object is the same as inserted
+                matching = match(mcmc_val(orion_period) / secondsInDay,
+                        cat_val(fake_period))
+
+                # Generate the periodogram
+                plot_periodogram(
+                        pgram_period,
+                        pgram_data,
+                        period_val,
+                        pgram_filename(filename, obj_id)
+                        )
+
+                # Generate the lightcurve
                 plot_phase_folded_lightcurve(
                         object_hjd,
                         object_mag,
