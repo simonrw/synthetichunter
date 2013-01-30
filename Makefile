@@ -33,7 +33,6 @@ deps:
 help:
 	@echo $(HELPTEXT)
 
-watch: | deps
-	@coffee --compile --output . --watch coffee &
+watch: | deps coffee
 	@supervisor app.coffee
 
