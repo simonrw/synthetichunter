@@ -324,15 +324,6 @@ def analyse_file(filename, db):
                 matching = match(mcmc_val(orion_period) / secondsInDay,
                         cat_val(fake_period))
 
-                # Generate the periodogram
-                plt.figure(figsize=FIGURESIZE)
-                plt.plot(pgram_period, pgram_data, 'k-')
-                plt.xlabel(r'Orbital period / days')
-                plt.ylabel(r'$\Delta \chi^2$')
-                plt.axvline(mcmc_val(orion_period) / secondsInDay, zorder=-10)
-                plt.savefig(pgram_filename(filename, obj_id))
-                plt.close()
-
                 # Convert the data
                 object_hjd = hjd[mcmc_val(lc_index)].astype(float)
                 object_mag = mag[mcmc_val(lc_index)].astype(float)
