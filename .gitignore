@@ -16,3 +16,4 @@ hunter.log
 data.fits
 lib/*.js
 *.swp
+venv
