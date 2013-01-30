@@ -15,19 +15,35 @@ Options:
 
 from docopt import docopt
 from bson.objectid import ObjectId
+import sys
+from prettytable import PrettyTable
 import pymongo
 
 def main(args):
     with pymongo.Connection(host=args['--host'], port=int(args['--port'])) as conn:
         objects = conn.hunter.objects
 
-        result = objects.find_one({ "_id": ObjectId(args['<id>']) },
-                { "object_type": True })
+        _id = ObjectId(args['<id>'])
+
+        result = objects.find_one({ "_id": _id },
+                { "object_type": True, 'object_info': True, })
+
         if result:
-            if result['object_type'] == 'synthetic':
-                print 'Matched object'
-            else:
-                print 'Mismatch'
+            info = result['object_info']
+            input_period = info['input']['period']
+            orion_period = info['orion']['period']
+            mcmc_period = info['mcmc']['period']
+
+            pt = PrettyTable(['Object type', 'Input', 'Orion', 'MCMC'])
+
+            row = [
+                    'Matched' if result['object_type'] == 'synthetic' else 'Mismatch',
+                    input_period, orion_period, mcmc_period
+                    ]
+
+            pt.add_row(row)
+
+            print pt
         else:
             print "No object detected with id [{0}]".format(args['<id>'])
 
