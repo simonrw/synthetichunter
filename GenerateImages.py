@@ -338,31 +338,39 @@ def analyse_file(filename, db):
                 matching = match(mcmc_val(orion_period) / secondsInDay,
                         cat_val(fake_period))
 
-                # Generate the periodogram
-                plot_periodogram(
-                        pgram_period,
-                        pgram_data,
-                        period_val,
-                        pgram_filename(filename, obj_id)
-                        )
+                # Plot the periodogram, lightcurve and parameter space data for
+                # 3 values, the detected one and /2 and x2
+                multiples = [0.5, 1.0, 2.0]
+                filename_suffixes = ['_d2', '', '_x2']
 
-                # Generate the lightcurve
-                plot_phase_folded_lightcurve(
-                        object_hjd,
-                        object_mag,
-                        period_val,
-                        epoch_val,
-                        lc_filename(filename, obj_id)
-                        )
+                for multiple, suffix in zip(multiples, filename_suffixes):
+                    suffix = suffix + '.png'
 
-                # Plot the parameter space data
-                plot_parameter_space(
-                        mcmc_val(mcmc_period),
-                        mcmc_val(mcmc_radius),
-                        cat_val(fake_period),
-                        cat_val(fake_radius),
-                        phase_filename(filename, obj_id)
-                        )
+                    # Generate the periodogram
+                    plot_periodogram(
+                            pgram_period,
+                            pgram_data,
+                            period_val * multiple,
+                            pgram_filename(filename, obj_id, suffix=suffix)
+                            )
+
+                    # Generate the lightcurve
+                    plot_phase_folded_lightcurve(
+                            object_hjd,
+                            object_mag,
+                            period_val * multiple,
+                            epoch_val,
+                            lc_filename(filename, obj_id, suffix=suffix)
+                            )
+
+                    # Plot the parameter space data
+                    plot_parameter_space(
+                            mcmc_val(mcmc_period) * multiple,
+                            mcmc_val(mcmc_radius) * multiple,
+                            cat_val(fake_period) * multiple,
+                            cat_val(fake_radius) * multiple,
+                            phase_filename(filename, obj_id, suffix=suffix)
+                            )
 
                 # Generate the individual transit images
                 tr_image_names = analyse_data_object(
