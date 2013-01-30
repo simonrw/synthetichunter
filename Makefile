@@ -6,6 +6,9 @@ HELPTEXT = "\
 		   \n	- coffee					\
 		   \n		Compiles coffeescript	\
 		   \n								\
+		   \n	- watch						\
+		   \n		Watches for changes		\
+		   \n								\
 		   \n	-deps						\
 		   \n		Installs dependencies	\
 		   \n\n								\
@@ -29,3 +32,8 @@ deps:
 
 help:
 	@echo $(HELPTEXT)
+
+watch: | deps
+	@coffee --compile --output . --watch coffee &
+	@supervisor app.coffee
+
