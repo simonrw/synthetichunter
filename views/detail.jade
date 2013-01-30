@@ -34,6 +34,13 @@ block content
                                 img(data-bind='attr: { src: pgram_filename }')
 
         .row
+            .span12(style='text-align: center; padding-bottom: 10px;')
+                #period-split
+                    button.btn(data-bind='click: function() { periodUpdateImages("_d2"); }') /2
+                    button.btn(data-bind='click: function() { periodUpdateImages(""); }') x1
+                    button.btn(data-bind='click: function() { periodUpdateImages("_x2"); }') x2
+
+        .row
             .span12
                 #mcmc-results
                     table(class='table table-bordered')
