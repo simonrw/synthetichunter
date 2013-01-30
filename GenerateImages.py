@@ -157,6 +157,28 @@ def image_filename(filename, obj_id, prefix, suffix='.png'):
     return os.path.join(IMAGEDIR, prefix + hash_object(filename, obj_id) +
             suffix)
 
+def plot_phase_folded_lightcurve(hjd, mag, period, epoch, filename, nbins=150):
+    '''
+    Plots a phase folded periodogram for the data
+    '''
+    phase = (hjd - epoch) / period
+    phase[phase < 0] += 1.0
+    phase = phase % 1
+    phase[phase > 0.8] -= 1.0
+
+    bin_x, bin_y, bin_e = bin_data(phase, mag, nbins)
+
+    plt.figure(figsize=FIGURESIZE)
+    plt.plot(phase, mag, 'k.', ms=4, color='#aaaaaa')
+    plt.errorbar(bin_x, bin_y, bin_e, ls='None')
+    plt.plot(bin_x, bin_y, 'ro', ms=5, mec='k')
+    plt.xlim(-0.2, 0.8)
+    plt.xlabel(r'Orbital phase')
+    plt.ylabel(r'$\Delta \mathrm{mag}$')
+    plt.ylim(plt.ylim()[::-1])
+    plt.savefig(filename)
+    plt.close()
+
 lc_filename = partial(image_filename, prefix='lc_')
 pgram_filename = partial(image_filename, prefix='pg_')
 phase_filename = partial(image_filename, prefix='phase_')
@@ -276,6 +298,7 @@ def analyse_file(filename, db):
                 plt.close()
 
                 # Generate the lightcurve
+                # Convert the data
                 object_hjd = hjd[mcmc_val(lc_index)].astype(float)
                 object_mag = mag[mcmc_val(lc_index)].astype(float)
 
@@ -284,24 +307,13 @@ def analyse_file(filename, db):
                 epoch_val = wd2jd(float(mcmc_val(orion_epoch)))
                 period_val = mcmc_val(orion_period) / secondsInDay
 
-
-                phase = (object_hjd - epoch_val) / period_val
-                phase[phase < 0] += 1.0
-                phase = phase % 1
-                phase[phase > 0.8] -= 1.0
-
-                bin_x, bin_y, bin_e = bin_data(phase, object_mag, 150)
-
-                plt.figure(figsize=FIGURESIZE)
-                plt.plot(phase, object_mag, 'k.', ms=4, color='#aaaaaa')
-                plt.errorbar(bin_x, bin_y, bin_e, ls='None')
-                plt.plot(bin_x, bin_y, 'ro', ms=5, mec='k')
-                plt.xlim(-0.2, 0.8)
-                plt.xlabel(r'Orbital phase')
-                plt.ylabel(r'$\Delta \mathrm{mag}$')
-                plt.ylim(plt.ylim()[::-1])
-                plt.savefig(lc_filename(filename, obj_id))
-                plt.close()
+                plot_phase_folded_lightcurve(
+                        object_hjd,
+                        object_mag,
+                        period_val,
+                        epoch_val,
+                        lc_filename(filename, obj_id)
+                        )
 
                 # Plot the parameter space data
                 #plt.figure(figsize=FIGURESIZE)
