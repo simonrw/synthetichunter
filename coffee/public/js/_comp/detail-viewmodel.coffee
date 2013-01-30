@@ -1,3 +1,17 @@
+# Changes the filename based on the dividor value
+change_filename = (fname, suffix) ->
+    re = /(\/data\/[a-zA-Z0-9_]+)(_d2|_x2)\.png/
+    parts = re.exec fname
+    if parts?
+        new_name = parts[1] + suffix + '.png'
+    else
+        re = /(\/data\/[a-zA-Z0-9_]+)\.png/
+        parts = re.exec fname
+        new_name = parts[1] + suffix + '.png'
+
+    return new_name
+
+
 class ObjectInformation
     constructor: (id, sessionid) ->
         self = this
@@ -35,6 +49,10 @@ class ObjectInformation
         self.viable_result.subscribe (value) ->
             add_user_info self.id(), sessionid, value
 
+    periodUpdateImages: (suffix) ->
+        self = this
+        self.lc_filename change_filename self.lc_filename(), suffix
+        self.pgram_filename change_filename self.pgram_filename(), suffix
 
 
 # Export the class
