@@ -78,12 +78,12 @@ exports.objects = (req, res) ->
         _mcmc_base = 'object_info.mcmc.'
         switch sort_var
             when 'SDE' then sort_var = _orion_base + 'sde'
-            when 'Planetary radius' then sort_var = _orion_base + 'radius'
-            when 'Orbital period' then sort_var = _orion_base + 'period'
-            when 'Transit depth' then sort_var = _orion_base + 'depth'
-            when 'Stellar radius' then sort_var = _orion_base + 'rstar'
+            when 'Planetary radius' then sort_var = _mcmc_base + 'radius'
+            when 'Orbital period' then sort_var = _mcmc_base + 'period'
+            when 'Transit depth' then sort_var = _mcmc_base + 'depth'
+            when 'Stellar radius' then sort_var = _mcmc_base + 'rstar'
             when 'V magnitude' then sort_var = _orion_base + 'vmag'
-            when 'Effective temperature' then sort_var = _mcmc_base + 'teff'
+            when 'Effective temperature' then sort_var = _orion_base + 'teff'
 
         if req.body.sort_direction == '1' 
             sort_var = sort_var 
