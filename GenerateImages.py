@@ -333,7 +333,6 @@ def analyse_file(filename, db):
                 plt.savefig(pgram_filename(filename, obj_id))
                 plt.close()
 
-                # Generate the lightcurve
                 # Convert the data
                 object_hjd = hjd[mcmc_val(lc_index)].astype(float)
                 object_mag = mag[mcmc_val(lc_index)].astype(float)
@@ -396,16 +395,6 @@ def analyse_file(filename, db):
                         'tr_filenames': tr_image_names,
                     },
                     'object_type': 'synthetic' if matching else 'other',
-                    #'plot_data': {
-                        #'pgram': {
-                            #'x': list(pgram_period),
-                            #'y': list(pgram_data),
-                            #},
-                        #'lc': {
-                            #'x': list(phase),
-                            #'y': list(object_mag),
-                            #},
-                    #},
                     'object_info': {
                         'obj_id': obj_id,
                         'input': {
@@ -429,7 +418,6 @@ def analyse_file(filename, db):
                             },
                         'mcmc': {
                             'period': mcmc_val(mcmc_period),
-                            #'epoch': 2450000.0 + float(mcmc_val(mcmc_epoch)),
                             'prob_rp': mcmc_val(prob_rp),
                             'sn_red': mcmc_val(sn_red),
                             'sn_ellipse': mcmc_val(sn_ellipse),
@@ -443,23 +431,12 @@ def analyse_file(filename, db):
                     'user_info': [],
                     })
 
-                #if len(all_objects) >= 10:
-                    #print "Uploading"
-                    #collection.insert(all_objects)
-                    #all_objects = []
-
-
 
         else:
             print "No matches found"
 
-
-
-
 def main(args):
 
-    #hostname = 'db.circularspace.co.uk'
-    #port = 26017
     hostname = args['<host>']
     port = int(args['<port>'])
 
@@ -471,7 +448,6 @@ def main(args):
     if not os.path.isdir(os.path.join(BASEDIR, 'images')):
         os.makedirs(os.path.join(BASEDIR, 'images'))
 
-    #pool = Pool(4)
     map(partial(analyse_file, db=conn.hunter), args['<file>'])
 
 if __name__ == '__main__':
