@@ -378,7 +378,7 @@ def analyse_file(filename, db):
                         [object_hjd, object_mag],
                         period_val,
                         epoch_val,
-                        mcmc_val(orion_width),
+                        mcmc_val(orion_width) / secondsInDay,
                         )
 
                 collection.insert({
