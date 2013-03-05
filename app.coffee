@@ -30,6 +30,15 @@ app.configure () ->
     }
     app.use app.router
     app.use express.static path.join __dirname, 'public'
+		app.use (req, res) ->
+			res.status 400
+			res.render '404.jade', { title: '404: File Not Found' }
+		app.use (error, req, res, next) ->
+			res.status 500
+			res.render '500.jade', {
+				title: '500: Internal Server Error'
+				error: error
+			}
 
 
 app.configure 'development', () ->
