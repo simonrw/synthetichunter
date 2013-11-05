@@ -200,6 +200,7 @@ def plot_periodogram(period, pgram_data, vline, filename):
 
 
 def plot_parameter_space(mcmc_p, mcmc_r, input_p, input_r, filename):
+    ticks = [0.1, 0.2, 0.5, 1, 2, 5, 10]
     plt.figure(figsize=FIGURESIZE)
     plt.axvline(input_p, color='r')
     plt.axhline(input_r, color='r')
@@ -211,10 +212,10 @@ def plot_parameter_space(mcmc_p, mcmc_r, input_p, input_r, filename):
             'go', ms=5, mec='k')
     plt.yscale('log')
     plt.xscale('log')
+    plt.xticks(ticks, ticks)
+    plt.yticks(ticks, ticks)
     plt.xlim(0.1, 10)
     plt.ylim(0.1, 6)
-    plt.xticks([0.1, 0.5, 1, 2, 5, 10], map(str, [0.1, 0.5, 1, 2, 5, 10]))
-    plt.yticks([0.1, 0.5, 1, 2, 5], map(str, [0.1, 0.5, 1, 2, 5]))
     plt.grid(True, which='both')
     plt.xlabel(r'Orbital period')
     plt.ylabel(r'Planetary radius')
