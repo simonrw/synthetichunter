@@ -18,18 +18,23 @@ import matplotlib.pyplot as plt
 import pymongo
 from functools import partial
 import md5
-from matplotlib.ticker import ScalarFormatter
-from multiprocessing import Pool
-from srw.constants import *
 import os
 from random import random
 
 BASEDIR = os.path.dirname(__file__)
 IMAGEDIR = os.path.join(BASEDIR, 'images')
 FIGURESIZE = (8, 5)
+rJup = 71492E3
+rSun = 6.995E8
+secondsInMinute = 60.
+secondsInHour = 60. * secondsInMinute
+secondsInDay = 24. * secondsInHour
+AU = 1.496E11
+
 
 def to_phase(t, epoch, period):
     return (t - epoch) / period
+
 
 def next_mid_transit(hjd, epoch, period):
     '''
@@ -51,6 +56,7 @@ def next_mid_transit(hjd, epoch, period):
     while current < end:
         yield current
         current += period
+
 
 def generate_images(hjd, flux, period, epoch, twidth, outdir,
         out_base, detect_width=3):
@@ -95,10 +101,6 @@ def analyse_data_object(out_name_base, lightcurves_data, period, epoch, width):
             os.path.dirname(out_name_base), os.path.basename(out_name_base))
 
 
-
-
-
-
 def bin_data(xdata, ydata, nbins, x_range=(-0.2, 0.8)):
     '''
     Bin the data into an integer number of bins
@@ -130,20 +132,22 @@ def bin_data(xdata, ydata, nbins, x_range=(-0.2, 0.8)):
 
     return [np.array(d) for d in [bx, by, be]]
 
+
 def match(a, b, toler=0.01):
     '''
     Fuzzy matching function
     '''
     return (np.abs(a - b) / b) < toler
 
+
 def wd2jd(wd):
-    jd_ref=2453005.5
+    jd_ref = 2453005.5
     return (wd / secondsInDay) + jd_ref
+
 
 def mcmc_wd2jd(wd):
-    jd_ref=2450000.0
+    jd_ref = 2450000.0
     return (wd / secondsInDay) + jd_ref
-
 
 
 def hash_object(filename, obj_id):
@@ -153,9 +157,11 @@ def hash_object(filename, obj_id):
     '''
     return md5.new(os.path.basename(filename) + ':' + obj_id).hexdigest()
 
+
 def image_filename(filename, obj_id, prefix, suffix='.png'):
     return os.path.join(IMAGEDIR, prefix + hash_object(filename, obj_id) +
             suffix)
+
 
 def plot_phase_folded_lightcurve(hjd, mag, period, epoch, filename, nbins=150):
     '''
@@ -179,6 +185,7 @@ def plot_phase_folded_lightcurve(hjd, mag, period, epoch, filename, nbins=150):
     plt.savefig(filename)
     plt.close()
 
+
 def plot_periodogram(period, pgram_data, vline, filename):
     '''
     Plots the periodogram image
@@ -190,6 +197,7 @@ def plot_periodogram(period, pgram_data, vline, filename):
     plt.axvline(vline, zorder=-10)
     plt.savefig(filename)
     plt.close()
+
 
 def plot_parameter_space(mcmc_p, mcmc_r, input_p, input_r, filename):
     plt.figure(figsize=FIGURESIZE)
@@ -214,11 +222,11 @@ def plot_parameter_space(mcmc_p, mcmc_r, input_p, input_r, filename):
     plt.close()
 
 
-
 lc_filename = partial(image_filename, prefix='lc_')
 pgram_filename = partial(image_filename, prefix='pg_')
 phase_filename = partial(image_filename, prefix='phase_')
 tr_filename_base = partial(image_filename, prefix='tr_', suffix='')
+
 
 def analyse_file(filename, db):
     print "Analysing [{0}]".format(filename)
@@ -239,13 +247,10 @@ def analyse_file(filename, db):
         mcmc_dchisq_mr = candidates.field("mcmc_dchisq_mr")
         clump_idx = candidates.field("clump_indx")
         mcmc_period = candidates.field("mcmc_period")
-        mcmc_width = candidates.field('mcmc_width')
-        mcmc_epoch = candidates.field('mcmc_epoch')
         mcmc_depth = candidates.field('mcmc_depth')
 
         lc_index = candidates.field('lc_idx') - 1
         pgram_index = candidates.field('pg_idx') - 1
-
 
         fake_period = catalogue.field('fake_period') / secondsInDay
         fake_depth = catalogue.field('fake_depth')
@@ -264,9 +269,6 @@ def analyse_file(filename, db):
         orion_epoch = candidates.field('epoch')
         orion_depth = candidates.field('depth')
         orion_width = candidates.field('width')
-
-
-
 
         ind = np.array([True if 'SWASP' not in name else False
             for name in obj_id])
@@ -292,8 +294,6 @@ def analyse_file(filename, db):
 
         collection = db.objects
 
-        all_objects = []
-
         if ind.any():
             objects = obj_id[ind]
             p_objects = infile['periodograms'].data.field('obj_id')[pgram_index[ind]]
@@ -301,7 +301,6 @@ def analyse_file(filename, db):
             lightcurves_hdu = infile['lightcurves'].data
             hjd = lightcurves_hdu.field('hjd')
             mag = lightcurves_hdu.field('mag')
-            mag_err = lightcurves_hdu.field('mag_err')
 
             assert objects.size == np.arange(obj_id.size)[ind].size
 
@@ -382,7 +381,6 @@ def analyse_file(filename, db):
                         )
 
                 collection.insert({
-                #all_objects.append({
                     'obj_id': obj_id,
                     'random': random(),
                     'file_info': {
@@ -430,9 +428,9 @@ def analyse_file(filename, db):
                     'user_info': [],
                     })
 
-
         else:
             print "No matches found"
+
 
 def main(args):
 
